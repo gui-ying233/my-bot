@@ -185,7 +185,7 @@ output1 = output2 = 异格 = 种族 = 出身地区 = 异格任务 = 配音 = 初
 }
 
 术语字典={
-    
+
     #状态
 
     'ba.sluggish':'停顿',
@@ -484,12 +484,12 @@ while 1:
                                })
         break
     except Exception as e:
-        print(str(e), "重新尝试获取页面...")
+        print(e, "重新尝试获取页面...")
 
 for _ in result0.json()['query']['pages']:
     if _['title'] == 代号:
         result1:str = _['revisions'][0]['content']
-    elif _['title'] == 代号+'/语音记录':
+    elif _['title'] == f'{代号}/语音记录':
         result2:str = _['revisions'][0]['content']
     elif _['title'] == '后勤技能一览':
         result3:str = _['revisions'][0]['content']

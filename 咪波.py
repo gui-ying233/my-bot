@@ -10,8 +10,15 @@ titles = []
 def 新干员(new: str) -> list[str]:
     global titles
     for _ in new.split('|'):
-        titles += ['头像_'+_, '头像_'+_+'_2', '半身像_'+_+'_1',
-                   '半身像_'+_+'_2', '立绘_'+_+'_1', '立绘_'+_+'_2', '道具_带框_'+_+'的信物']
+        titles += [
+            f'头像_{_}',
+            f'头像_{_}_2',
+            f'半身像_{_}_1',
+            f'半身像_{_}_2',
+            f'立绘_{_}_1',
+            f'立绘_{_}_2',
+            f'道具_带框_{_}的信物',
+        ]
     return titles
 
 
@@ -19,15 +26,18 @@ def 新时装(new: str, id: int = 1) -> list[str]:
     global titles
     id = str(id)
     for _ in new.split('|'):
-        titles += ['头像_'+_+'_skin'+id, '半身像_' +
-                   _+'_skin'+id, '立绘_'+_+'_skin'+id+'']
+        titles += [
+            f'头像_{_}_skin{id}',
+            '半身像_' + _ + '_skin' + id,
+            f'立绘_{_}_skin{id}',
+        ]
     return titles
 
 
 def 新技能(new: str) -> list[str]:
     global titles
     for _ in new.split('|'):
-        titles.append('技能_'+_)
+        titles.append(f'技能_{_}')
     return titles
 
 
@@ -41,7 +51,7 @@ def main() -> None:
     title = ''
     for _ in range(len(titles)):
         if titles[_][:3] != '文件:' and titles[_][:5] != 'File:':
-            titles[_] = '文件:' + titles[_]
+            titles[_] = f'文件:{titles[_]}'
         if titles[_][-4:] != '.png':
             titles[_] += '.png'
     while 1:
@@ -57,7 +67,7 @@ def main() -> None:
                                    })
             break
         except Exception as e:
-            print(str(e), "重试...")
+            print(e, "重试...")
     result = result0.json()['query']['pages']
 
     for _ in range(len(result)):
@@ -67,33 +77,37 @@ def main() -> None:
                 print(f'【{_ + 1}/{len(result)}】\t{title}\t未找到文件')
         except:
             if title[:4] == '模组类型':
-                title = 'AkModuleType' + title[4:]
+                title = f'AkModuleType{title[4:]}'
             elif title[:3] == '半身像' or title[:2] == '立绘' or title[:2] == '地图' or title[:2] == '技能' or title[:5] == '道具 带框' or title[:2] == '模组' or title[:2] == '图标':
-                title = '明日方舟' + title
+                title = f'明日方舟{title}'
             elif title[:2] == '道具' or title[:2] == '主题' and title[-6:-4] == '总览':
-                title = '明日方舟 ' + title
+                title = f'明日方舟 {title}'
             elif title[:2] == '头像':
-                title = '明日方舟 tx' + title[2:]
+                title = f'明日方舟 tx{title[2:]}'
             elif title[:5] == '情报处理室':
-                title = '明日方舟剧情 ' + title[6:]
+                title = f'明日方舟剧情 {title[6:]}'
             elif title[:6] == '职业分支图标':
-                title = '明日方舟职业_分支' + title[6:]
+                title = f'明日方舟职业_分支{title[6:]}'
             elif title[:9] == 'Skin logo':
-                title = 'Skinlogo' + title[9:]
+                title = f'Skinlogo{title[9:]}'
             elif title[:3] == '主题图':
                 title = title[4:]
             try:
                 while 1:
                     print(f'【{_ + 1}/{len(result)}】\t{title}\t下载中…')
-                    open('./图片/'+title, "wb").write(
-                        requests.get(result[_]['imageinfo'][0]['url']).content)
-                    if result[_]['imageinfo'][0]['sha1'] == sha1(open('./图片/'+title, "rb").read()).hexdigest():
+                    open(f'./图片/{title}', "wb").write(
+                        requests.get(result[_]['imageinfo'][0]['url']).content
+                    )
+                    if (
+                        result[_]['imageinfo'][0]['sha1']
+                        == sha1(open(f'./图片/{title}', "rb").read()).hexdigest()
+                    ):
                         print('\t下载完成')
                         break
                     else:
                         print("SHA-1验证失败，重新下载…")
             except Exception as e:
-                print(str(e), "下载失败")
+                print(e, "下载失败")
     print('进程结束')
 
 

@@ -8,8 +8,6 @@ while True:
     print(str(datetime.now())[:-7])
 
     noChange = True
-    dataNew = {}
-
     with open("/Users/emmm/Desktop/明日方舟/讨论监视.json", "r") as f:
         dataOld = load(f)
 
@@ -33,11 +31,19 @@ while True:
                                    })
             break
         except Exception as e:
-            print(str(e), "重试...")
+            print(e, "重试...")
     result = result0.json()["query"]["pages"]
-    for _ in range(len(result)):
-        dataNew.update({result[_]["title"]: int(result[_]["revisions"][0]["timestamp"][:4] + result[_]["revisions"][0]["timestamp"][5:7] + result[_]["revisions"][0]
-                                                ["timestamp"][8:10] + result[_]["revisions"][0]["timestamp"][11:13] + result[_]["revisions"][0]["timestamp"][14:16] + result[_]["revisions"][0]["timestamp"][17:19])})
+    dataNew = {
+        result[_]["title"]: int(
+            result[_]["revisions"][0]["timestamp"][:4]
+            + result[_]["revisions"][0]["timestamp"][5:7]
+            + result[_]["revisions"][0]["timestamp"][8:10]
+            + result[_]["revisions"][0]["timestamp"][11:13]
+            + result[_]["revisions"][0]["timestamp"][14:16]
+            + result[_]["revisions"][0]["timestamp"][17:19]
+        )
+        for _ in range(len(result))
+    }
     open("/Users/emmm/Desktop/明日方舟/讨论监视.json",
          "w").write(dumps(dataNew, indent=4, ensure_ascii=False))
 
